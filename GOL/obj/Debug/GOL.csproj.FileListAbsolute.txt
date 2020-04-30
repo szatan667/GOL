@@ -1,0 +1,6 @@
+C:\Users\kuba\source\repos\GOL\bin\Debug\GOL.exe.config
+C:\Users\kuba\source\repos\GOL\bin\Debug\GOL.exe
+C:\Users\kuba\source\repos\GOL\bin\Debug\GOL.pdb
+C:\Users\kuba\source\repos\GOL\obj\Debug\GOL.csproj.CoreCompileInputs.cache
+C:\Users\kuba\source\repos\GOL\obj\Debug\GOL.exe
+C:\Users\kuba\source\repos\GOL\obj\Debug\GOL.pdb

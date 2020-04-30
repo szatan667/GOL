@@ -1,0 +1,9 @@
+C:\Users\kuba\source\repos\GOL_GFX\bin\Debug\GOL_GFX.exe.config
+C:\Users\kuba\source\repos\GOL_GFX\bin\Debug\GOL_GFX.exe
+C:\Users\kuba\source\repos\GOL_GFX\bin\Debug\GOL_GFX.pdb
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.MAIN_WINDOW.resources
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.Properties.Resources.resources
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.csproj.GenerateResource.cache
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.csproj.CoreCompileInputs.cache
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.exe
+C:\Users\kuba\source\repos\GOL_GFX\obj\Debug\GOL_GFX.pdb
