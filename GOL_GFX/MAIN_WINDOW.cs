@@ -7,39 +7,38 @@ namespace GOL_GFX
 {
     public partial class MAIN_WINDOW : Form
     {
-        readonly GOL gol;
+        GOL Gol { get; set; }
 
         //Bitmap next;
-        readonly Graphics gfx;
+        private readonly Graphics gfx;
 
         public MAIN_WINDOW()
         {
             InitializeComponent();
-            gol = new GOL(lifeBox.Width/10, lifeBox.Height/10);
+            Gol = new(lifeBox.Width / 10, lifeBox.Height / 10);
             gfx = lifeBox.CreateGraphics();
 
             comboPreset.SelectedIndex = 0;
         }
-        private void TimerLife_Tick(object sender, EventArgs e)
+        private void TimerLife_Tick(object s, EventArgs e)
         {
             //Display current life state
-            for (int x = 0; x < gol.width; x++)
-                for (int y = 0; y < gol.height; y++)
-                    if (gol.current.Cols[x].Cells[y].IsAlive)
+            for (int x = 0; x < Gol.Width; x++)
+                for (int y = 0; y < Gol.Height; y++)
+                    //if (Gol.Current.Cols[x].Cells[y].IsAlive)
+                    if (Gol.GetLife(x,y))
                         SetPixel(x, y, Brushes.Black);
                     else
                         SetPixel(x, y, Brushes.White);
             
             //Create next generation
-            gol.MakeLife();
+            Gol.MakeLife();
         }
 
-        private void SetPixel(int x, int y, Brush brush)
-        {
-            gfx.FillRectangle(brush, x*10, y*10, 8, 8);
-        }
+        private void SetPixel(int x, int y, Brush Brush) => 
+            gfx.FillRectangle(Brush, x * 10, y * 10, 8, 8);
 
-        private void ButtonStartStop_Click(object sender, EventArgs e)
+        private void ButtonStartStop_Click(object s, EventArgs e)
         {
             if (TimerLife.Enabled == true)
             {
@@ -55,50 +54,46 @@ namespace GOL_GFX
             }
         }
 
-        private void ButtonStep_Click(object sender, EventArgs e)
-        {
-            TimerLife_Tick(sender, e);
-        }
+        private void ButtonStep_Click(object s, EventArgs e) => 
+            TimerLife_Tick(s, e);
 
-        private void ButtonReset_Click(object sender, EventArgs e)
+        private void ButtonReset_Click(object s, EventArgs e)
         {
             TimerLife.Enabled = false;
-            gol.InitializeLife(comboPreset.SelectedItem);
+            Gol.InitializeLife(comboPreset.SelectedItem);
             TimerLife.Enabled = true;
         }
     }
     public class GRID
     {
         //List of columns
-        public List<COL> Cols;
+        public List<COL> Cols { get; set; }
         public GRID(int NoOfCols, int NoOfRows)
         {
             //Allocate set of columns
-            Cols = new List<COL>(NoOfCols);
+            Cols = new(NoOfCols);
 
-            //Add actual colums to list
+            //dd actual colums to list
             for (int i = 0; i < NoOfCols; i++)
-                Cols.Add(new COL(NoOfCols));
+                Cols.Add(new(NoOfCols));
 
             //Add number of cells to each columns
-            foreach (var row in Cols)
+            foreach (COL row in Cols)
                 for (int i = 0; i < NoOfRows; i++)
-                    row.Cells.Add(new CELL());
+                    row.Cells.Add(new());
         }
     }
     public class COL
     {
-        //List of cells (row items in x-y pattern)
-        public List<CELL> Cells;
-        public COL(int NoOfCells)
-        {
-            //Allocate list of cells
-            Cells = new List<CELL>(NoOfCells);
-        }
+        public List<CELL> Cells { get; set; }
+        public COL(int NoOfCells) =>
+            Cells = new(NoOfCells);
     }
     public class CELL
     {
-        public bool IsAlive = false;
+        public bool IsAlive { get; set; }
+        public CELL() =>
+            IsAlive = false;
     }
 
     //Main game of life object
@@ -106,24 +101,24 @@ namespace GOL_GFX
     {
         //Game of life attributes
         //Table size
-        public int width;
-        public int height;
+        public int Width { get; set; }
+        public int Height { get; set; }
         private readonly byte[,] _neighbors;
 
         //Life boards
-        public GRID current; //current generation to display
-        private readonly GRID next;   //temporary next generation
+        private GRID current; //current generation
+        private readonly GRID next; //temporary next generation
 
         //Create game of life object - class constructor
-        public GOL(int w, int h)
+        public GOL(int GameWidth, int GameHeight)
         {
-            width = w;
-            height = h;
+            Width = GameWidth;
+            Height = GameHeight;
 
-            _neighbors = new byte[width, height];
+            _neighbors = new byte[Width, Height];
 
-            current = new GRID(width, height);
-            next = new GRID(width, height);
+            current = new(Width, Height);
+            next = new(Width, Height);
 
             InitializeLife(-1);
         }
@@ -132,11 +127,11 @@ namespace GOL_GFX
         public void InitializeLife(object preset)
         {
             //Clear life boards
-            foreach (var col in current.Cols)
-                foreach (var cell in col.Cells)
+            foreach (COL col in current.Cols)
+                foreach (CELL cell in col.Cells)
                     cell.IsAlive = false;
-            foreach (var col in next.Cols)
-                foreach (var cell in col.Cells)
+            foreach (COL col in next.Cols)
+                foreach (CELL cell in col.Cells)
                     cell.IsAlive = false;
 
             //Draw some initial creatures on life board
@@ -170,11 +165,19 @@ namespace GOL_GFX
             FillNeighbors();
         }
         
+        //Get life status of single cell
+        public bool GetLife(int x, int y)
+        {
+            if (current.Cols[x].Cells[y].IsAlive)
+                return true;
+            return false;
+        }
+
         //Fill neighbors table
         private void FillNeighbors()
         {
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
                     _neighbors[x, y] = GetNeighbors(x, y);
         }
 
@@ -184,14 +187,14 @@ namespace GOL_GFX
             //Reset neighbors counter
             byte _n = 0;
 
-            if (current.Cols[(x - 1 + width) % width].Cells[(y - 1 + height) % height].IsAlive) _n++;
-            if (current.Cols[(x - 1 + width) % width].Cells[y].IsAlive) _n++;
-            if (current.Cols[(x - 1 + width) % width].Cells[(y + 1) % height].IsAlive) _n++;
-            if (current.Cols[x].Cells[(y - 1 + height) % height].IsAlive) _n++;
-            if (current.Cols[x].Cells[(y + 1) % height].IsAlive) _n++;
-            if (current.Cols[(x + 1) % width].Cells[(y - 1 + height) % height].IsAlive) _n++;
-            if (current.Cols[(x + 1) % width].Cells[y].IsAlive) _n++;
-            if (current.Cols[(x + 1) % width].Cells[(y + 1) % height].IsAlive) _n++;
+            if (current.Cols[(x - 1 + Width) % Width].Cells[(y - 1 + Height) % Height].IsAlive) _n++;
+            if (current.Cols[(x - 1 + Width) % Width].Cells[y].IsAlive) _n++;
+            if (current.Cols[(x - 1 + Width) % Width].Cells[(y + 1) % Height].IsAlive) _n++;
+            if (current.Cols[x].Cells[(y - 1 + Height) % Height].IsAlive) _n++;
+            if (current.Cols[x].Cells[(y + 1) % Height].IsAlive) _n++;
+            if (current.Cols[(x + 1) % Width].Cells[(y - 1 + Height) % Height].IsAlive) _n++;
+            if (current.Cols[(x + 1) % Width].Cells[y].IsAlive) _n++;
+            if (current.Cols[(x + 1) % Width].Cells[(y + 1) % Height].IsAlive) _n++;
 
             return _n;
         }
@@ -199,8 +202,8 @@ namespace GOL_GFX
         //Create next generation of creatures
         internal void MakeLife()
         {
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
                 {
                     byte _n;
                     _n = _neighbors[x, y];
@@ -254,12 +257,11 @@ namespace GOL_GFX
         //Random board
         void DrawRandom(GRID g)
         {
-            Random _rnd = new Random();
+            Random _rnd = new();
             foreach (var row in g.Cols)
                 foreach (var cell in row.Cells)
                 {
-                    int _val = _rnd.Next(3);
-                    if (_val < 1) cell.IsAlive = false;
+                    if (_rnd.Next(3) < 1) cell.IsAlive = false;
                     else cell.IsAlive = true;
                 }
         }
