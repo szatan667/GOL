@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-//using System.Threading;
 
 namespace GOL
 {
@@ -13,16 +12,16 @@ namespace GOL
         //Game of life attributes
         public int width; //table size
         public int height; 
-        private char _alive = '▒';  //▫▪■█●░▒▓
-        private char _dead = ' ';
+        private readonly char _alive = '▒';  //▫▪■█●░▒▓
+        private readonly char _dead = ' ';
         public int generation;
 
         //Table of creatures
         public char[,] life;
-        private char[,] _next;
+        private readonly char[,] _next;
         
         //Table of neighbors
-        private byte[,] _neighbors;
+        private readonly byte[,] _neighbors;
 
         //Create game of life object - class constructor
         /// <summary>
@@ -100,44 +99,44 @@ namespace GOL
         }
 
         //Birht-giving methods - add creatures to the board at desired position
-        private void addCreature(int x, int y)
+        private void AddCreature(int x, int y)
         {
             life[x % width, y % height] = _alive;
         }
         //BLINKER
-        public void addLife_Blinker(int x, int y)
+        public void AddLife_Blinker(int x, int y)
         {
-           addLife_Generic(new string[] { " * ",
+           AddLife_Generic(new string[] { " * ",
                                           " * ",
                                           " * "}, x, y);
         }
         //FROG
-        public void addLife_Frog(int x, int y)
+        public void AddLife_Frog(int x, int y)
         {
-            addLife_Generic(new string[] {" ** ",
+            AddLife_Generic(new string[] {" ** ",
                                           "*   ",
                                           "   *",
                                           " ** "}, x, y);
         }
         //GLIDER
-        public void addLife_Glider(int x, int y)
+        public void AddLife_Glider(int x, int y)
         {
-            addLife_Generic(new string[] { " * ",
+            AddLife_Generic(new string[] { " * ",
                                            "  *",
                                            "***"}, x, y);
         }
         //DAKOTA
-        public void addLife_Dakota(int x, int y)
+        public void AddLife_Dakota(int x, int y)
         {
-            addLife_Generic(new string[] { " *  *",
+            AddLife_Generic(new string[] { " *  *",
                                            "*    ",
                                            "*   *",
                                            "**** "}, x, y);
         }
         //DIEHARD
-        public void addLife_Diehard(int x, int y)
+        public void AddLife_Diehard(int x, int y)
         {
-            addLife_Generic(new string[] { "      * ",
+            AddLife_Generic(new string[] { "      * ",
                                            "**      ",
                                            " *   ***"}, x, y);
         }
@@ -147,9 +146,9 @@ namespace GOL
         /// </summary>
         /// <param name="x">Initial x-position of top-left corner</param>
         /// <param name="y">Initiali y-position of top-left corner</param>
-        public void addLife_Pentomino(int x, int y)
+        public void AddLife_Pentomino(int x, int y)
         {
-            addLife_Generic(new string[] { " **",
+            AddLife_Generic(new string[] { " **",
                                            "** ",
                                            " * "}, x, y);
         }
@@ -159,9 +158,9 @@ namespace GOL
         /// </summary>
         /// <param name="x">Initial x-position of top-left corner</param>
         /// <param name="y">Initiali y-position of top-left corner</param>
-        public void addLife_EternalGrowth(int x, int y)
+        public void AddLife_EternalGrowth(int x, int y)
         {
-            addLife_Generic(new string[] { "*** *",
+            AddLife_Generic(new string[] { "*** *",
                                            "*    ",
                                            "   **",
                                            " ** *",
@@ -172,7 +171,7 @@ namespace GOL
         /// Add generic pattern to life table
         /// </summary>
         /// <param name="life">Table of strings (rows) representing life table. Every non-space character means cell is alive</param>
-        private void addLife_Generic(string[] life, int x, int y)
+        private void AddLife_Generic(string[] life, int x, int y)
         {
             int posy = y;
 
@@ -181,7 +180,7 @@ namespace GOL
                 for (int posx = 0; posx < s.Length; posx++)
                 {
                     if (s.Substring(posx,1) != " ")
-                    addCreature(x + posx, posy);
+                    AddCreature(x + posx, posy);
                 }
 
                 posy++;
@@ -193,13 +192,11 @@ namespace GOL
         /// Add random pattern of creatures to life table
         /// </summary>
         //RANDOM
-        public void addLife_Random()
+        public void AddLife_Random()
         {
-            Random _rnd = new Random();
-
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
-                    if (_rnd.Next(3) > 1) addCreature(x, y);
+                    if (new Random().Next(3) > 1) AddCreature(x, y);
 
             FillNeighbors();
         }
@@ -208,20 +205,20 @@ namespace GOL
     //Main program class
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             //Create a population
-            GOL gol = new GOL(150, 60);
-            gol.addLife_Blinker(0, 0);
-            //gol.addLife_Frog(10, 10);
-            gol.addLife_Glider(15, 15);
-            //gol.addLife_Dakota(0, 5);
-            //gol.addLife_Dakota(80, 15);
-            //gol.addLife_Diehard(20, 10);
-            //gol.addLife_Diehard(60, 50);
-            //gol.addLife_Pentomino(30, 10);
-            //gol.addLife_EternalGrowth(110, 55);
-            //gol.addLife_Random();
+            GOL gol = new(150, 60);
+            //gol.AddLife_Blinker(0, 1);
+            gol.AddLife_Frog(10, 10);
+            //gol.AddLife_Glider(15, 15);
+            //gol.AddLife_Dakota(0, 5);
+            //gol.AddLife_Dakota(80, 15);
+            //gol.AddLife_Diehard(20, 10);
+            //gol.AddLife_Diehard(60, 50);
+            //gol.AddLife_Pentomino(30, 10);
+            //gol.AddLife_EternalGrowth(110, 55);
+            //gol.AddLife_Random();
 
             //Setup concole output
             Console.CursorVisible = false;
